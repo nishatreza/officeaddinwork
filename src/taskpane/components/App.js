@@ -25,11 +25,15 @@ const App = ({ title, isOfficeInitialized }) => {
 
   if (!isOfficeInitialized) {
     return (
-      <Progress
-        title={title}
-        logo={require("./../../../assets/logo-filled.png")}
-        message="Please sideload your addin to see app body."
-      />
+
+      <div>
+        <h1>hello</h1>
+      </div>
+      // <Progress
+      //   title={title}
+      //   logo={require("./../../../assets/logo-filled.png")}
+      //   message="Please sideload your addin to see app body."
+      // />
     );
   }
 
