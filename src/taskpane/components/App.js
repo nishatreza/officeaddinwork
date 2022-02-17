@@ -28,11 +28,43 @@ const App = ({ title, isOfficeInitialized }) => {
   const click = async () => {
     return Word.run(async (context) => {
 
+      const insertOnlineVideo = (vdName, vdHtml, vdWidth, vdHeight) => {
+        if (Office.CoercionType.Ooxml) {
+          var xmlCode = replaceCode(vdName, escapeHtml(vdHtml), vdWidth, vdHeight);
+          Office.context.document.setSelectedDataAsync(
+            xmlCode,
+            { coercionType: "ooxml" }
+          );
+        }
+      }
 
 
-      const paragraph = context.document.body.insertParagraph("Hello World", Word.InsertLocation.end);
+      var vdName = "My Video";
+      var vdHtml = '<iframe width="800" height="600" src="http://www.youtube.com/embed/qk51u8-4uo4" frameborder="0" allowfullscreen></iframe>'; //YouTube embed video code
+      //var vdHtml = '<object width="800" height="600"><param name="movie" value="http://i.d.com.com/av/video/embed/player.swf" /><param name="background" value="#333333" /><param name="allowFullScreen" value="true" /><param name="allowScriptAccess" value="true" /><param name="FlashVars" value="playerType=embedded&type=id&value=50139900" /><embed src="http://www.cnet.com/av/video/embed/player.swf" type="application/x-shockwave-flash" background="#333333" width="800" height="600" allowFullScreen="true" allowScriptAccess="always" FlashVars="playerType=embedded&type=id&value=50139900" /></object>'; //CNET's embed video code
+      var vdWidth = 800;
+      var vdHeight = 600;
+      insertOnlineVideo(vdName, vdHtml, vdWidth, vdHeight);
 
-      paragraph.font.color = "blue";
+      const replaceCode = () => {
+        var i = 0;
+        var args = arguments;
+        var str = $('#xmlcode').val();
+        return str.replace(/@@/g, function () { return args[i++]; });
+      }
+
+      //Escape HTML
+      const escapeHtml = (str) => {
+        var elm = document.createElement('pre');
+        if (typeof elm.textContent != 'undefined') {
+          elm.textContent = str;
+        } else {
+          elm.innerText = str;
+        }
+        return elm.innerHTML.replace(/["']/g, '&quot;');
+      }
+
+
 
       await context.sync();
     });
@@ -57,6 +89,8 @@ const App = ({ title, isOfficeInitialized }) => {
       <p className="ms-font-l">
         Modify the source files, then click <b>Run</b>.
       </p>
+
+
       <DefaultButton className="ms-welcome__action" iconProps={{ iconName: "ChevronRight" }} onClick={click}>
         Run
       </DefaultButton>
